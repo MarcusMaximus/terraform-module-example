@@ -1,4 +1,38 @@
 # Load Balancer Settings
+
+resource "aws_security_group" "elb_public_sg" {
+  name        = "allow_elb_public"
+  description = "Allow inbound traffic from the internet to the ELB"
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "TCP"
+    cidr_blocks = "0.0.0.0/0"
+  }
+
+  egress {
+    from_port       = "${var.app_listen_port}" 
+    to_port         = "${var.app_listen_port}" 
+    protocol        = "TCP"
+    security_groups = "${aws_security_group.app_sg.id}"
+  }
+}
+
+
+resource "aws_security_group" "app_sg" {
+  name        = "allow_app_access"
+  description = "Allow inbound traffic to the EC2 on port 5000"
+
+  ingress {
+    from_port   = "${var.app_listen_port}" 
+    to_port     = "${var.app_listen_port}" 
+    protocol    = "TCP"
+    security_groups = "${aws_security_group.elb_public_sg.id}"
+  }
+}
+
+
 resource "aws_elb" "app_elb"  {
     name               = "${var.app_name}-elb"
     
