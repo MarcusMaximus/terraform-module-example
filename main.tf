@@ -1,6 +1,6 @@
 # The main terraform config
 provider "aws" {
-  region = "${var.region}"
+  region = "${var.deploy_region}"
 }
 
 module "simple-stack" {

@@ -4,8 +4,17 @@ variable "deploy_region" {
   default = "ap-southeast-2"
 }
 
+variable "asg_max" {
+  type = "string"
+  default = "2"
+}
 
-variable "availability_zone" {
+variable "asg_desired" {
+  type = "string"
+  default = "2"
+}
+
+variable "availability_zones" {
   type = list(string)
   default = ["ap-southeast-2a","ap-southeast-2b","ap-southeast-2c"]
 }

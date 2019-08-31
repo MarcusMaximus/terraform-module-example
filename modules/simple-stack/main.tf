@@ -4,7 +4,7 @@ resource "aws_elb" "app_elb"  {
     
     # Listen on port 80 for testing
     listener {
-        instance_port     = "${var.app_port}" 
+        instance_port     = "${var.app_listen_port}" 
         instance_protocol = "http"
         lb_port           = 80
         lb_protocol       = "http"
@@ -12,7 +12,7 @@ resource "aws_elb" "app_elb"  {
 
     # listen on 443
     listener {
-        instance_port     = "${var.app_port}" 
+        instance_port     = "${var.app_listen_port}" 
         instance_protocol = "http"
         lb_port            = 443
         lb_protocol       = "http"
@@ -24,7 +24,7 @@ resource "aws_elb" "app_elb"  {
         healthy_threshold   = 2
         unhealthy_threshold = 2
         timeout             = 3
-        target              = "HTTP:${var.app_port}/health"
+        target              = "HTTP:${var.app_listen_port}/health"
         interval            = 30
     }
 
@@ -61,7 +61,7 @@ resource "aws_autoscaling_group" "app_asg" {
 }
 
 # Create a new load balancer attachment
-resource "aws_autoscaling_attachment" "asg_attachment_bar" {
-  autoscaling_group_name = "${aws_autoscaling_group.asg.id}"
-  elb                    = "${aws_elb.bar.id}"
+resource "aws_autoscaling_attachment" "app_asg_attachment" {
+  autoscaling_group_name = "${aws_autoscaling_group.app_asg.id}"
+  elb                    = "${aws_elb.app_elb.id}"
 }

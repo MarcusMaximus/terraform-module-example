@@ -1,7 +1,27 @@
-# Variables to be passed to the module
+# Variables to be used. MAke variables as descriptive as possible. 
 variable "deploy_region" {
   type = "string"
   default = "ap-southeast-2"
+}
+
+variable "asg_max" {
+  type = "string"
+  default = "2"
+}
+
+variable "asg_desired" {
+  type = "string"
+  default = "2"
+}
+
+variable "availability_zones" {
+  type = list(string)
+  default = ["ap-southeast-2a","ap-southeast-2b","ap-southeast-2c"]
+}
+
+variable "app_name" {
+  type = "string"
+  default = "sample-app"
 }
 variable "app_ami_id" {
   type = "string"
