@@ -76,6 +76,7 @@ resource "aws_elb" "app_elb"  {
         interval            = 30
     }
 
+    availability_zones = "${var.availability_zones}"
     security_groups = ["${aws_security_group.elb_public_sg.id}"]
 }
 
