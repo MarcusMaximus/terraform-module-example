@@ -43,7 +43,7 @@ resource "aws_security_group_rule" "allow_app_access" {
   to_port                  = "${var.app_listen_port}" 
   protocol                 = "TCP"
   type                     = "ingress"
-  source_security_group_id = "${aws_security_group.app_sg.id}"
+  source_security_group_id = "${aws_security_group.elb_public_sg.id}"
 }
 
 
@@ -75,6 +75,8 @@ resource "aws_elb" "app_elb"  {
         target              = "HTTP:${var.app_listen_port}/health"
         interval            = 30
     }
+
+    security_groups = ["${aws_security_group.elb_public_sg.id}"]
 }
 
 # ASG Section of mudule
@@ -83,6 +85,11 @@ resource "aws_launch_template" "app_lt" {
   image_id      = "${var.app_ami_id}" 
   # TODO: Possibly make instance type a varialbe
   instance_type = "t2.micro"
+  # security_groups = ["${aws_security_group.app_sg.id}"]
+  network_interfaces {
+    associate_public_ip_address = false
+    security_groups = ["${aws_security_group.app_sg.id}"]
+  }
 }
 
 resource "aws_autoscaling_group" "app_asg" {
