@@ -17,4 +17,21 @@ Things to think about
 Create terrform module the creates a ASG with a minimum of 2 instances that sits behind a public ELB.
 - Use an AMI that has an application baked into it using packer.
 - Allow this AMI to be passed as a variable to terraform.
-- Possibly allow ELB and EC2 availiblity zones to be passed as variables also.
+- The follow variables are also available.
+    - "deploy_region" - The aws region to deploy to
+    - "asg_max" - The max number of EC2s in the auto scaling group
+    - "asg_desired" - The desired number of EC2s in the auto scaling group
+    - "availability_zones" - The availablity zones to deploy to. (Should have used subnets)
+    - "app_name" - The name of the application and associated resouces
+    - "app_ami_id" - The pre baked AMI to deploy containing the app
+    - "app_listen_port" - THe port the app listens on
+    - "load_balancer_acm" - The SSL cert to use with the load balancer.
+
+- Outputs the ELB DNS when terraform apply is complete.
+```
+Apply complete! Resources: 7 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+module_elb_address = sample-app-elb-1791867273.ap-southeast-2.elb.amazonaws.com
+```

@@ -99,6 +99,8 @@ resource "aws_autoscaling_group" "app_asg" {
   max_size           = "${var.asg_max}" 
   min_size           = 2
 
+  # UPDATE health check to use ELB.
+  
   launch_template {
     id      = "${aws_launch_template.app_lt.id}"
     version = "$Latest"
