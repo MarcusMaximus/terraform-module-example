@@ -1,5 +1,4 @@
 # The terraform outputs file
-output "elb_dns_name" {
-  description = "The DNS name of the ELB"
-  value       = "test " # module.simple-stack.aws_elb.app_elb
+output "module_elb_address" {
+  value = "${module.simple-stack.elb_address}"
 }

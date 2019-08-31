@@ -25,7 +25,7 @@ variable "app_name" {
 }
 variable "app_ami_id" {
   type = "string"
-  default = "ami-09ed3399f245db127"
+  default = "ami-0dcb98e0ef6519fe9"
 }
 
 variable "app_listen_port" {
