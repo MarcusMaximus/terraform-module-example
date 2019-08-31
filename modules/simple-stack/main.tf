@@ -1,35 +1,49 @@
 # Load Balancer Settings
 
 resource "aws_security_group" "elb_public_sg" {
-  name        = "allow_elb_public"
+  name_prefix        = "allow_elb_public"
   description = "Allow inbound traffic from the internet to the ELB"
 
   ingress {
     from_port   = 443
     to_port     = 443
     protocol    = "TCP"
-    cidr_blocks = "0.0.0.0/0"
+    cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow traffic from the internet on port 443"
   }
 
   egress {
     from_port       = "${var.app_listen_port}" 
     to_port         = "${var.app_listen_port}" 
     protocol        = "TCP"
-    security_groups = "${aws_security_group.app_sg.id}"
+    security_groups = ["${aws_security_group.app_sg.id}"]
+    description = "Allow outbound traffic to the EC2 on the app port"
   }
 }
 
 
 resource "aws_security_group" "app_sg" {
-  name        = "allow_app_access"
+  name_prefix        = "allow_app_access"
   description = "Allow inbound traffic to the EC2 on port 5000"
 
-  ingress {
-    from_port   = "${var.app_listen_port}" 
-    to_port     = "${var.app_listen_port}" 
-    protocol    = "TCP"
-    security_groups = "${aws_security_group.elb_public_sg.id}"
-  }
+  # Possible circular dependency
+  # Error: Cycle: module.simple-stack.aws_security_group.app_sg, module.simple-stack.aws_security_group.elb_public_sg
+  # ingress {
+  #   from_port   = "${var.app_listen_port}" 
+  #   to_port     = "${var.app_listen_port}" 
+  #   protocol    = "TCP"
+  #   security_groups = ["${aws_security_group.elb_public_sg.id}"]
+  # }
+}
+
+resource "aws_security_group_rule" "allow_app_access" {
+  description = "Allow inbound ELB traffic to the EC2 on the app port"
+  security_group_id        = "${aws_security_group.app_sg.id}"
+  from_port                = "${var.app_listen_port}" 
+  to_port                  = "${var.app_listen_port}" 
+  protocol                 = "TCP"
+  type                     = "ingress"
+  source_security_group_id = "${aws_security_group.app_sg.id}"
 }
 
 
